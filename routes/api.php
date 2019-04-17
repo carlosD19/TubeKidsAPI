@@ -10,4 +10,9 @@ Route::group([
     Route::post('logout', 'AuthController@logout')->name('logout');
     Route::post('refresh', 'AuthController@refresh')->name('refresh');
     Route::post('me', 'AuthController@me')->name('me');
+    Route::post('verify/email', 'VerificationController@sendEmail')->name('verify.email');
+
+
+    Route::resource('videos', 'VideoController');
+    Route::resource('profiles', 'ProfileController');
 });
