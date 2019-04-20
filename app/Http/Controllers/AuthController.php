@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\User;
+use App\SendCode;
 
 class AuthController extends Controller
 {
@@ -30,7 +31,20 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Email or password invalid.'], 401);
         }
-        return $this->respondWithToken($token);
+        if ($this->sendCode(request(['email']))) {
+            return $this->respondWithToken($token);
+        }
+        return response()->json(['error' => 'Cannot send the code, try again.'], 409);
+    }
+
+    public function sendCode($email)
+    {
+        $user       = User::where('email', $email)->first();
+        $user->code = SendCode::sendCode($user->phone_number);
+        if ($user->save()) {
+            return true;
+        }
+        return false;
     }
 
     public function signup(UserRequest $request)
@@ -57,7 +71,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Successfully logged out.']);
     }
 
     /**

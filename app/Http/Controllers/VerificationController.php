@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use JWTAuth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyMail;
@@ -15,18 +16,25 @@ class VerificationController extends Controller
         if (!$this->validateEmail($request->email)) {
             return $this->failedResponse();
         }
-        $this->send($request->email);
+        $this->send($request->email, $request->bearerToken());
         return $this->successResponse();
     }
 
-    public function send($email)
+    public function send($email, $token)
     {
-        Mail::to($email)->send(new VerifyMail());
+        $user = User::where('email', $email)->first();
+        Mail::to($email)->send(new VerifyMail($token, $user->firstname));
     }
 
     public function validateEmail($email)
     {
         return !!User::where('email', $email)->first();
+    }
+
+    public function confirmEmail($token)
+    {
+        $user = JWTAuth::toUser();
+        return $token;
     }
 
     public function failedResponse()
