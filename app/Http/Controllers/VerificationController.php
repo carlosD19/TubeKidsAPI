@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use JWTAuth;
+use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyMail;
@@ -33,8 +33,11 @@ class VerificationController extends Controller
 
     public function confirmEmail($token)
     {
-        $user = JWTAuth::toUser();
-        return $token;
+        $user = auth()->user();
+        $user = User::find($user->id);
+        $user->email_verified_at = date("Y-m-d");
+        $user->save();
+        return $user;
     }
 
     public function failedResponse()

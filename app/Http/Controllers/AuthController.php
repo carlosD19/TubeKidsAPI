@@ -39,8 +39,9 @@ class AuthController extends Controller
 
     public function sendCode($email)
     {
-        $user       = User::where('email', $email)->first();
-        $user->code = SendCode::sendCode($user->phone_number);
+        $user              = User::where('email', $email)->first();
+        $user->code        = SendCode::sendCode($user->phone_number);
+        $user->active_code = false;
         if ($user->save()) {
             return true;
         }
@@ -50,8 +51,15 @@ class AuthController extends Controller
     public function signup(UserRequest $request)
     {
         User::create($request->all());
-        return $this->login($request);
+
+        $credentials = request(['email', 'password']);
+        if (! $token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Email or password invalid.'], 401);
+        }
+        return $this->respondWithToken($token);
     }
+
+
 
     /**
      * Get the authenticated User.
@@ -70,6 +78,10 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        $user = auth()->user();
+        $user = User::find($user->id);
+        $user->active_code = false;
+        $user->save();
         auth()->logout();
         return response()->json(['message' => 'Successfully logged out.']);
     }
