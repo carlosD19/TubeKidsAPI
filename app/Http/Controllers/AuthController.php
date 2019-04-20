@@ -39,19 +39,21 @@ class AuthController extends Controller
 
     public function sendCode($email)
     {
-        $user              = User::where('email', $email)->first();
-        $user->code        = SendCode::sendCode($user->phone_number);
-        $user->active_code = false;
-        if ($user->save()) {
-            return true;
+        $user = User::where('email', $email)->first();
+        if ($user->email_verified_at) {
+            $user->code        = SendCode::sendCode($user->phone_number);
+            $user->active_code = false;
+            if ($user->save()) {
+                return true;
+            }
+            return false;
         }
-        return false;
+        return true;
     }
 
     public function signup(UserRequest $request)
     {
         User::create($request->all());
-
         $credentials = request(['email', 'password']);
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Email or password invalid.'], 401);

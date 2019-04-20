@@ -35,9 +35,11 @@ class VerificationController extends Controller
     {
         $user = auth()->user();
         $user = User::find($user->id);
-        $user->email_verified_at = date("Y-m-d");
-        $user->save();
-        return $user;
+        if (!$user->email_verified_at) {
+            $user->email_verified_at = date("Y-m-d");
+            $user->save();
+        }
+        return 'Su correo ha sido verificado.';
     }
 
     public function failedResponse()
