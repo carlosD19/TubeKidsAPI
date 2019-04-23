@@ -10,7 +10,8 @@ class VideoController extends Controller
 {
     public function index()
     {
-        $videos = Video::where('user_id', $ID_DEL_USUARIO)->get();
+        $user   = auth()->user();
+        $videos = Video::where('user_id', $user->id)->get();
         return response()->json(['data' => $videos], 200);
     }
     
