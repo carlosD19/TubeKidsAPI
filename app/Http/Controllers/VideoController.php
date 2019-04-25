@@ -12,9 +12,10 @@ class VideoController extends Controller
 {
     public function index()
     {
-        $user   = auth()->user();
-        $videos = Video::where('user_id', $user->id)->get();
-        return response()->json(['data' => $videos], 200);
+        $token    = request()->bearerToken();
+        $user     = auth()->user();
+        $videos   = Video::where('user_id', $user->id)->get();
+        return $videos;
     }
     
     public function store(VideoRequest $request)
@@ -28,7 +29,7 @@ class VideoController extends Controller
         $video = array(
             'name'    => $data['name'],
             'type'    => $data['type'],
-            'path'    => $data['path'],
+            'path'    => $data['type'] == 'true'?'https://www.youtube.com/embed/'.$data['path']:$data['path'],
             'user_id' => $user->id,
         );
 
