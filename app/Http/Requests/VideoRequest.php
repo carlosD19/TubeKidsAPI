@@ -13,7 +13,7 @@ class VideoRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class VideoRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name'       => 'required',
+            'type'       => 'required',
+            'path'       => '',
+            'video'      => 'mimes:mpeg, ogg, mp4, webm, 3gp, mov, flv, avi, wmv, ts|file|max:5120'
         ];
     }
 }

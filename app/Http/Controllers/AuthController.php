@@ -31,9 +31,9 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Email or password invalid.'], 401);
         }
-        if ($this->sendCode(request(['email']))) {
+        //if ($this->sendCode(request(['email']))) {
             return $this->respondWithToken($token);
-        }
+        //}
         return response()->json(['error' => 'Cannot send the code, try again.'], 409);
     }
 

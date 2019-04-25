@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyMail;

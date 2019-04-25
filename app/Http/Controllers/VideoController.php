@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\VideoRequest;
+use Illuminate\Support\Facades\Storage;
 use App\Video;
 use Response;
 
@@ -17,7 +19,20 @@ class VideoController extends Controller
     
     public function store(VideoRequest $request)
     {
-        $video = Video::create($request->all());
+        $data   = $request->all();
+        $user   = auth()->user();
+        if ($request->file('video')) {
+            $path = Storage::disk('public')->put('videos', $request->file('video'));
+            $data['path'] = asset($path);
+        }
+        $video = array(
+            'name'    => $data['name'],
+            'type'    => $data['type'],
+            'path'    => $data['path'],
+            'user_id' => $user->id,
+        );
+
+        $video = Video::create($video);
         $response = Response::make(json_encode(['data'=>$video ]), 201)->header('Location', 'http://localhost/api/videos/'.$video ->id)->header('Content-Type', 'application/json');
         return $response;
     }
