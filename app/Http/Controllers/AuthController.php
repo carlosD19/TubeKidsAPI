@@ -23,7 +23,7 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse response json
      */
     public function login()
     {
@@ -37,6 +37,11 @@ class AuthController extends Controller
         return response()->json(['error' => 'Cannot send the code, try again.'], 409);
     }
 
+    /**
+     * Send code from nexmo
+     * @param email to get the user
+     * @return true or false if code was send
+     */
     public function sendCode($email)
     {
         $user = User::where('email', $email)->first();
@@ -51,6 +56,12 @@ class AuthController extends Controller
         return true;
     }
 
+    /**
+     * In this method a new user is registered
+     *
+     * @param  \Illuminate\Http\Request $request receive user datas
+     * @return \Illuminate\Http\Response the json with user token
+     */
     public function signup(UserRequest $request)
     {
         User::create($request->all());
@@ -110,7 +121,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60,
+            'expires_in'   => auth()->factory()->getTTL() * 600,
             'user'         => auth()->user()
         ]);
     }

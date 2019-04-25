@@ -10,6 +10,11 @@ use App\Mail\VerifyMail;
 
 class VerificationController extends Controller
 {
+    /**
+     * Method to get the request and redirect to send mail
+     * @param request with email and token
+     * @return if send mail was success or not
+     */
     public function sendEmail(Request $request)
     {
         if (!$this->validateEmail($request->email)) {
@@ -18,18 +23,29 @@ class VerificationController extends Controller
         $this->send($request->email, $request->bearerToken());
         return $this->successResponse();
     }
-
+    /**
+     * Method to send mail
+     * @param email and token
+     */
     public function send($email, $token)
     {
         $user = User::where('email', $email)->first();
         Mail::to($email)->send(new VerifyMail($token, $user->firstname));
     }
-
+    /**
+     * Method to validate if the email is correct
+     * @param email
+     * @return if the email is correct
+     */
     public function validateEmail($email)
     {
         return !!User::where('email', $email)->first();
     }
-
+    /**
+     * Method to confirm email
+     * @param token of the user
+     * @return 
+     */
     public function confirmEmail($token)
     {
         $user = auth()->user();

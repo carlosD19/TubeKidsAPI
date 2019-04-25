@@ -9,6 +9,11 @@ use App\SendCode;
 
 class CodeVerificationController extends Controller
 {
+    /**
+     * Method to verify the code 2FA
+     * @param request with code
+     * @return if the code was varified or not
+     */
     public function verifySMS(Request $request)
     {
         if ($user = User::where('code', $request->code)->where('email', $request->email)->first()) {
@@ -19,7 +24,11 @@ class CodeVerificationController extends Controller
         }
         return $this->failedResponseSMS();
     }
-
+    /**
+     * Method to send the code
+     * @param email to find the user
+     * @return if the code was send
+     */
     public function sendCode($email)
     {
         $user              = User::where('email', $email)->first();
@@ -34,14 +43,20 @@ class CodeVerificationController extends Controller
             'error' => 'Your code was not sending, Please try again.'
         ], Response::HTTP_NOT_FOUND);
     }
-
+    /**
+     * Method to return failed response
+     * @return response json error
+     */
     public function failedResponseSMS()
     {
         return response()->json([
             'error' => 'Verify code is not correct, Please try again.'
         ], Response::HTTP_NOT_FOUND);
     }
-
+    /**
+     * Method to return success response
+     * @return response json data
+     */
     public function successResponseSMS()
     {
         return response()->json([
