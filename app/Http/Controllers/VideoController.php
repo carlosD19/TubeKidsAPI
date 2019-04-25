@@ -49,7 +49,20 @@ class VideoController extends Controller
 
     public function update(VideoRequest $request)
     {
-        $video = Video::find($request->video_id)->update($request->all());
+        $data   = $request->all();
+        $user   = auth()->user();
+        if ($request->file('video')) {
+            $path = Storage::disk('public')->put('videos', $request->file('video'));
+            $data['path'] = asset($path);
+        }
+        $video = array(
+            'id'      => $data['id'],
+            'name'    => $data['name'],
+            'type'    => $data['type'],
+            'path'    => $data['type'] == 'true'?'https://www.youtube.com/embed/'.$data['path']:$data['path'],
+            'user_id' => $user->id,
+        );
+        $video = Video::find($request->id)->update($video);
         return response()->json(['status'=>'ok','data' => $video], 200);
     }
 

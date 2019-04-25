@@ -17,6 +17,7 @@ Route::group([
     Route::get('code/{email}', 'CodeVerificationController@sendCode')->name('send.code');
     //CRUD
     Route::resource('videos', 'VideoController');
+    Route::post('videos/{video}', 'VideoController@update');
     Route::resource('profiles', 'ProfileController');
     //EXTRAS
     Route::post('refresh', 'AuthController@refresh')->name('refresh');

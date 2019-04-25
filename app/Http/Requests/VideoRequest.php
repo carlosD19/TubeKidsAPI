@@ -27,7 +27,7 @@ class VideoRequest extends FormRequest
             'name'       => 'required',
             'type'       => 'required',
             'path'       => '',
-            'video'      => 'mimes:mpeg, ogg, mp4, webm, 3gp, mov, flv, avi, wmv, ts|file|max:5120'
+            'video'      => ''
         ];
     }
 }
