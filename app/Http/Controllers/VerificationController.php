@@ -44,7 +44,7 @@ class VerificationController extends Controller
     /**
      * Method to confirm email
      * @param token of the user
-     * @return 
+     * @return success message
      */
     public function confirmEmail($token)
     {
@@ -56,14 +56,20 @@ class VerificationController extends Controller
         }
         return 'Su correo ha sido verificado.';
     }
-
+    /**
+     * Method to return a error
+     * @return error HTTP NOT FOUND
+     */
     public function failedResponse()
     {
         return response()->json([
             'error' => 'Email does\´t found on our database'
         ], Response::HTTP_NOT_FOUND);
     }
-
+    /**
+     * Method to return a success response
+     * @return success HTTP OK
+     */
     public function successResponse()
     {
         return response()->json([

@@ -10,6 +10,10 @@ use Response;
 
 class VideoController extends Controller
 {
+    /**
+     * Method to get list of videos
+     * @return videos
+     */
     public function index()
     {
         $token    = request()->bearerToken();
@@ -17,7 +21,11 @@ class VideoController extends Controller
         $videos   = Video::where('user_id', $user->id)->get();
         return $videos;
     }
-    
+    /**
+     * Method to create a new video
+     * @param request with video data
+     * @return response with the video created
+     */
     public function store(VideoRequest $request)
     {
         $data   = $request->all();
@@ -37,7 +45,11 @@ class VideoController extends Controller
         $response = Response::make(json_encode(['data'=>$video ]), 201)->header('Location', 'http://localhost/api/videos/'.$video ->id)->header('Content-Type', 'application/json');
         return $response;
     }
-    
+     /**
+     * Method to get a specific video
+     * @param video id
+     * @return response with the video
+     */
     public function show($video_id)
     {
         $video = Video::find($video_id);
@@ -46,7 +58,11 @@ class VideoController extends Controller
         }
         return response()->json(['status'=>'ok', 'data'=>$video], 200);
     }
-
+    /**
+     * Method to update a specific video
+     * @param request with video data
+     * @return response with the video updated
+     */
     public function update(VideoRequest $request)
     {
         $data   = $request->all();
@@ -65,7 +81,11 @@ class VideoController extends Controller
         $video = Video::find($request->id)->update($video);
         return response()->json(['status'=>'ok','data' => $video], 200);
     }
-
+    /**
+     * Method to destroy a specific video
+     * @param video id
+     * @return response with status 204
+     */
     public function destroy($video_id)
     {
         $video = Video::find($video_id);
